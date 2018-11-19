@@ -219,8 +219,13 @@
 	+ Detailed instructions here: [https://developer.android.com/studio/run/managing-avds.html](https://developer.android.com/studio/run/managing-avds.html)
 - Update Chrome on the emulator here: [https://www.apkmirror.com/apk/google-inc/chrome/#variants](https://www.apkmirror.com/apk/google-inc/chrome/#variants)
 - To pull up the app on your simulator: **10.0.2.2:8080**
+- To start developing:
+	+ `cd course-project-starting-setup`
+	+ `npm start`
+	+ Open Android Studio and open Emulator
+	+ web browser: localhost:8080
+	+ anroid emulator: 10.0.2.2:8080
 
-###
 
 
 
