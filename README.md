@@ -26,7 +26,7 @@
 
 [back to top](#top)
 
-### PWSs vs. Native Mobile Apps
+### PWAs vs. Native Mobile Apps
 
 - Avg smartphone user: 87% in Native Apps vs. 13% in Mobile Web
 - Pro Native App:
@@ -86,7 +86,7 @@
 - Progressive Enhancement means you can progressively enhance your web application
 - You can add some features to existing (legacy) App
 - Existing "modern" App can implement some core PWA features
-- Upcoming project could fully implement as PWS right from the start
+- Upcoming project could fully implement as PWA right from the start
 
 [back to top](#top)
 
