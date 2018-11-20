@@ -316,9 +316,32 @@
 
 ## The Services Workers
 
+### Why Service Workers Are Amazing
+
+- service workers to a lot of work behind the scenes
+- What are Service Workers
+	+ JavaScript files run on one single thread, attached to individual HTML pages
+	+ Service Workers run on a **separate** single thread
+	+ they run in the background and are decouple from HTML pages
+	+ Manages **ALL PAGES** of given scope (e.g. all pages of a domain)
+	+ SWs live on even after pages have been closed
+	+ **Summary:** 
+		* SW's are background processes
+		* use JavaScript but work totally differently than the normal JS code
+		* Cannot interact with the DOM
+		* They are not attached to a page but rather a certain scope
+	+ Because they run in the background, they are good at respondign to events
+
 
 
 [back to top](#top)
+
+### "Listenable" Events (in Service Worker)
+
+
+
+
+
 
 
 ## Promise and Fetch
