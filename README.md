@@ -332,16 +332,23 @@
 		* They are not attached to a page but rather a certain scope
 	+ Because they run in the background, they are good at respondign to events
 
-
+![What are Service Workers](https://github.com/coolinmc6/pwa-course/blob/master/assets/what-are-service-workers.png)
 
 [back to top](#top)
 
 ### "Listenable" Events (in Service Worker)
 
+|Event|Source|
+|:---:|:---|
+|Fetch|Browser or Page-related JavaScript initiats a Fetch (Http request)<br>**Note:** you don't trigger a fetch request with a normal AJAX request|
+|Push Notifications|Service Worker receives Web Push Notification (from server)|
+|Notification Interaction|User interacts with displayed Notification|
+|Background Sync|Service Worker receives Background Sync Event (e.g. Internet Connection was restored)|
+|Service Worker Lifecycle|Service Worker Phase changes|
 
+[back to top](#top)
 
-
-
+### The Service Worker Lifecycle
 
 
 ## Promise and Fetch
