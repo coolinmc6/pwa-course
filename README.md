@@ -1,6 +1,19 @@
 <a name="top"></a>
 # Complete Guide to Progressive Web Apps
 
+## Progressive Web App Links
+
+**General PWA Links**
+
+- [https://infrequently.org/2016/09/what-exactly-makes-something-a-progressive-web-app/](https://infrequently.org/2016/09/what-exactly-makes-something-a-progressive-web-app/)
+
+**Manifest Links**
+
+- [Add to Home Screen](https://developers.google.com/web/fundamentals/app-install-banners/)
+- [MDN on Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest)
+- [Google Web App Manifest Explanation](https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/)
+- [Add to Home Screen](https://developers.google.com/web/fundamentals/app-install-banners/)
+
 ## Getting Started
 
 ### What are Progressive Web Apps (PWSa)?
@@ -105,6 +118,8 @@
 - Why?
 	+ with the home screen icon, we increase user engagement by not having to type in the URL
 
+[back to top](#top)
+
 ### Adding the Manifest
 
 - You have to add the file
@@ -120,6 +135,8 @@
 	<link rel="manifest" href="/manifest.json">
 </head>
 ```
+
+[back to top](#top)
 
 ### Understanding App Manifest Properties
 
@@ -148,6 +165,8 @@
 			- sizes
 				+ recommend having multiple sizes 48x48, 96x96, and up
 	+ related_applications: Related applications, Native, that you might want users to download
+
+[back to top](#top)
 
 ### Adding Properties to the App Manifest
 
@@ -206,9 +225,13 @@
 }
 ```
 
+[back to top](#top)
+
 ### PWAs and Browser Support
 
 - Pretty well supported; being developed for Safari, should be ready now on FireFox
+
+[back to top](#top)
 
 ### Simulating the Web App on an Emulator
 
@@ -226,14 +249,137 @@
 	+ web browser: localhost:8080
 	+ anroid emulator: 10.0.2.2:8080
 
+[back to top](#top)
+
+### Installing the Web App Requirements
+
+- See this: [Add to Home Screen](https://developers.google.com/web/fundamentals/app-install-banners/)
+
+[back to top](#top)
+
+### Adding Properties for Safari
+
+- Add meta tags so that it looks good on Safari
+- This is what you need:
+
+```html
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="PWAGram">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-57x57.png" sizes="57x57">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-60x60.png" sizes="60x60">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-72x72.png" sizes="72x72">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-76x76.png" sizes="76x76">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-114x114.png" sizes="114x114">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-144x144.png" sizes="144x144">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-152x152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-180x180.png" sizes="180x180">
+```
+
+[back to top](#top)
+
+### Adding Properties for Internet Explorer
+
+- These are the meta tags for Internet Explorer
+
+```html
+<meta name="msapplication-TileImage" content="/src/images/icons/apple-icon-144x144.png">
+<meta name="msapplication-TileColor" content="#fff">
+<meta name="theme-color" content="#3f51b5">
+```
+
+- Note: the "theme-color" tag typically matches your `theme_color` from the `manifest.json`
+- Here is the final HEAD tag additions:
+
+```html
+<!-- Required for All Web Apps -->
+<link rel="manifest" href="/manifest.json">
+<!-- Required for Safari (for Web Apps) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="PWAGram">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-57x57.png" sizes="57x57">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-60x60.png" sizes="60x60">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-72x72.png" sizes="72x72">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-76x76.png" sizes="76x76">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-114x114.png" sizes="114x114">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-144x144.png" sizes="144x144">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-152x152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="/src/images/icons/apple-icon-180x180.png" sizes="180x180">
+<!-- Required for Internet Explorer (for Web Apps) -->
+<meta name="msapplication-TileImage" content="/src/images/icons/apple-icon-144x144.png">
+<meta name="msapplication-TileColor" content="#fff">
+<meta name="theme-color" content="#3f51b5">
+```
+
+[back to top](#top)
+
+## The Services Workers
 
 
 
+[back to top](#top)
+
+
+## Promise and Fetch
 
 
 
+[back to top](#top)
+
+## Service Workers - Caching
 
 
+
+[back to top](#top)
+
+## Service Workers - Advanced Caching
+
+
+
+[back to top](#top)
+
+## IndexDB and Dynamic Data
+
+
+
+[back to top](#top)
+
+## Creating a Responsive User Interface (UI)
+
+
+
+[back to top](#top)
+
+## Background Sync
+
+
+
+[back to top](#top)
+
+## Web Push Notifications
+
+
+
+[back to top](#top)
+
+## Native Device Features
+
+
+
+[back to top](#top)
+
+## Service Worker Management with Workbox
+
+
+
+[back to top](#top)
+
+## SPAs and PWAs
+
+
+
+[back to top](#top)
 
 
 
