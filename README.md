@@ -16,7 +16,7 @@
 
 ## Getting Started
 
-### What are Progressive Web Apps (PWSa)?
+### What are Progressive Web Apps (PWAs)?
 
 - progressively enhance web apps to look and feel like native apps
 - They should be the following
