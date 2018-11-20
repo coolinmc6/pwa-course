@@ -1,6 +1,14 @@
 <a name="top"></a>
 # Complete Guide to Progressive Web Apps
 
+## Table of Contents
+
+- [PWA Links]()
+- [Getting Started](#getting-started)
+- [Understanding the App Manifest](#understanding-the-app-manifest)
+- [The Service Workers](#the-service-workers)
+- []
+
 ## Progressive Web App Links
 
 **General PWA Links**
@@ -314,7 +322,7 @@
 
 [back to top](#top)
 
-## The Services Workers
+## The Service Workers
 
 ### Why Service Workers Are Amazing
 
