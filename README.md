@@ -405,6 +405,38 @@ if('serviceWorker' in navigator) {
 		* this suggests to me that with a rewritten URL, as long as my `.htaccess` file is properly setup, the file doesn't HAVE to live in the root of the domain
 	+ add a `.then()` with an anonymous function so that other stuff keeps running and you don't have to wait for the serviceWorker to be registered
 
+### Reacting to Incoming Events (in SW)
+
+- One quick note:
+
+```js
+if('serviceWorker' in navigator) {
+	navigator.serviceWorker
+		.register('/sw.js', { scope: '/help/'}) // you can control the scope
+		.then(function() {
+			console.log('Service worker registered!')
+		});
+}
+```
+
+- service workers ONLY work on HTTPS
+- you don't have access to normal events like "click" because you don't have access to the DOM
+- We started writing our service worker and this what we ended up with:
+
+```js
+self.addEventListener('install', function(event) {
+	console.log('[Service Worker] Installing Service Worker...', event)
+})
+
+self.addEventListener('activate', function(event) {
+	console.log('[Service Worker] Activating Service Worker...', event)
+	return self.clients.claim();
+})
+
+`````
+
+
+
 ## Promise and Fetch
 
 
