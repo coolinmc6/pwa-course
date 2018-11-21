@@ -435,7 +435,77 @@ self.addEventListener('activate', function(event) {
 
 `````
 
+- the last line of the `activate` event listener prevents errors and some strange behavior despite the fact that it's not always required
+- the "...Installing Service Worker" comes through but not the "...Activating Service Worker"
 
+### Updating & Activating Service Workers
+
+- **Note:** If you change your service worker, you must close all open tabs and re-open the page. The activation was failing / waiting because the new service worker could introduce breaking changes so it isn't activated immediately. Closing and reopening the page fixes this.
+	+ In the Application tab of Chrome DevTools...
+		* You can click "Update on reload" checkbox in Chrome DevTools; or...
+		* Click "Update" (next to http://www.localhost:8080)
+		* Unregister it and re-register it
+		* Click "Skip Waiting"
+
+### Non-Lifecycle Events
+
+- I added the fetch listener to the service worker
+- As a note, Chrome no longer automatically shows an "App Install Banner". You instead have to listen to a specific event (`beforeinstallprompt`) and then show the banner manually
+
+### Getting That "App Install Banner"
+
+### Testing the App on Real Device (and Installing the App)
+
+- He recommends this link: [https://developers.google.com/web/tools/chrome-devtools/remote-debugging/](https://developers.google.com/web/tools/chrome-devtools/remote-debugging/)
+- In Chrome DevTools:
+	+ click the three dots
+	+ More Tools
+	+ Remote Devices
+- Select the device that is connected and select `Port forwarding`
+
+### Deferring the App Install Banner
+
+- I added the code below to my `app.js` file:
+
+```js
+var deferredPrompt;
+
+//
+// CODE
+//
+
+window.addEventListener('beforeinstallprompt', function(event) {
+	console.log('beforeinstallprompt fired');
+	event.preventDefault();
+	deferredPrompt = event;
+	return false;
+});
+```
+
+- we create a variable that we want to attach to the event called `deferredPrompt` at the top of the file
+- the event listener attached to `window` listens for the event `beforeinstallprompt` and prevents it from firing.
+- We then can use it in our `feed.js` file when the user has done something that engages with the app like open the create modal. Here is the code:
+
+```js
+if (deferredPrompt) {
+	deferredPrompt.prompt();
+
+	deferredPrompt.userChoice.then(function(choiceResult) {
+		console.log(choiceResult.outcome);
+
+		if(choiceResult.outcome === 'dismissed') {
+			console.log('User cancelled installation');
+		} else {
+			console.log('User added to home screen');
+		}
+
+		deferredPrompt = null;
+	})
+}
+```
+
+- this did not work for me on my localhost but I need to try it on an emulator
+- **CM Next Step:** get it working on an emulator to make sure that it actually works!!
 
 ## Promise and Fetch
 
