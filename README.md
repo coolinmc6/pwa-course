@@ -367,6 +367,43 @@
 
 ### The Service Worker Lifecycle
 
+- A SW is not attached to a page but rather a domain
+- the browser will only install a SW if its the first time it's seen it or it has changed by a byte or more
+
+![Service Worker Lifecycle](https://github.com/coolinmc6/pwa-course/blob/master/assets/sw-lifecycle.png)
+
+1. index.html file loads a JavaScript file (e.g., `app.js`)
+2. `app.js` registers the service worker, `sw.js`
+3. there is an Install event
+4. the sw is activated as soon as it can be (so an old sw must be stopped / the page closed)
+
+### Service Worker Browser Support
+
+- isserviceworkersready? => according to the site [https://jakearchibald.github.io/isserviceworkerready/](https://jakearchibald.github.io/isserviceworkerready/), Yes! Confirming what I've seen in blog posts for awhile, pretty much all browsers can support service workers.
+
+### Registering a Service Worker
+
+- Create a new file called `sw.js` in the root of your folder
+- You want to register the service worker from a file that is available in every file on your website which, in this case, is `app.js`
+
+```js
+if('serviceWorker' in navigator) {
+	navigator.serviceWorker
+		.register('/sw.js')
+		.then(function() {
+			console.log('Service worker registered!')
+		});
+}
+```
+
+- This is what it is happening:
+	+ it looks for the `serviceWorker` property in `navigator`
+		* the Navigator object is used for browser detection.
+		* Per [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator), the `Navigator` interface represents the state and the identity of the user agent
+	+ if the browser has the `serviceWorker` property (it can support service workers), it registers the service worker with `navigator.serviceWorker.register()`
+	+ the argument passed to `register()` is simply the path to your service worker: `/sw.js`
+		* this suggests to me that with a rewritten URL, as long as my `.htaccess` file is properly setup, the file doesn't HAVE to live in the root of the domain
+	+ add a `.then()` with an anonymous function so that other stuff keeps running and you don't have to wait for the serviceWorker to be registered
 
 ## Promise and Fetch
 
