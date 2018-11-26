@@ -677,9 +677,41 @@ fetch('https://httpbin.org/ip')
 
 ### Why Caching?
 
+- Why Support Offline Access?
+	+ poor connection
+	+ no connection (i.e. elevator)
+		* you only have a few moments without connection so caching a few parts would allow someone to continue to use your app
+	+ Lie-Fie
+		* you think you have a WiFi connection but you don't!
 
 
 [back to top](#top)
+
+### Understanding the Cache API
+
+- Cache
+	+ Key: Request
+	+ Value: Response
+- The cache API can be accessed from both the Service Worker and the "Normal" JavaScript on the page
+
+### Browser Support
+
+- Chrome supports it but I'm not sure how well-used the cache API really is
+
+### Adjusting the Course Project
+
+### Identifying (Pre-)Cacheable Items
+
+- typically want to cache the app shell
+- what are the core assets of your app that are used on most pages of the app
+
+[back to top](#top)
+
+### Static Caching / Precaching
+
+- Static Caching at Installation
+
+![Caching API](https://github.com/coolinmc6/pwa-course/blob/master/assets/cache-api.png)
 
 ## Service Workers - Advanced Caching
 
