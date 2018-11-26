@@ -31,6 +31,19 @@
 - [Google Web App Manifest Explanation](https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/)
 - [Add to Home Screen](https://developers.google.com/web/fundamentals/app-install-banners/)
 
+**Promise Links**
+
+- [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+- [https://developers.google.com/web/fundamentals/primers/promises](https://developers.google.com/web/fundamentals/primers/promises)
+
+**Fetch Links**
+
+- [https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+- [https://davidwalsh.name/fetch](https://davidwalsh.name/fetch)
+- [https://developers.google.com/web/updates/2015/03/introduction-to-fetch](https://developers.google.com/web/updates/2015/03/introduction-to-fetch)
+
+
 ## Getting Started
 
 ### What are Progressive Web Apps (PWAs)?
@@ -426,17 +439,19 @@ if('serviceWorker' in navigator) {
 ```js
 self.addEventListener('install', function(event) {
 	console.log('[Service Worker] Installing Service Worker...', event)
-})
+});
 
 self.addEventListener('activate', function(event) {
 	console.log('[Service Worker] Activating Service Worker...', event)
 	return self.clients.claim();
-})
+});
 
-`````
+```
 
 - the last line of the `activate` event listener prevents errors and some strange behavior despite the fact that it's not always required
 - the "...Installing Service Worker" comes through but not the "...Activating Service Worker"
+
+[back to top](#top)
 
 ### Updating & Activating Service Workers
 
@@ -446,6 +461,8 @@ self.addEventListener('activate', function(event) {
 		* Click "Update" (next to http://www.localhost:8080)
 		* Unregister it and re-register it
 		* Click "Skip Waiting"
+
+[back to top](#top)
 
 ### Non-Lifecycle Events
 
@@ -462,6 +479,8 @@ self.addEventListener('activate', function(event) {
 	+ More Tools
 	+ Remote Devices
 - Select the device that is connected and select `Port forwarding`
+
+[back to top](#top)
 
 ### Deferring the App Install Banner
 
@@ -507,13 +526,156 @@ if (deferredPrompt) {
 - this did not work for me on my localhost but I need to try it on an emulator
 - **CM Next Step:** get it working on an emulator to make sure that it actually works!!
 
+[back to top](#top)
+
 ## Promise and Fetch
 
+### Async Code in JavaScript
 
+- JavaScript is Single-Threaded!
+
+### Promises - Basics
+
+- Promise example:
+
+```js
+var promise = new Promise(function(resolve, reject) {
+	setTimeout(function() {
+		resolve('This is executed once the timer is done!');
+	}, 3000);
+});
+
+promise.then(function(text) {
+	console.log(text);
+})
+
+console.log('This is executed right after setTimeout()');
+```
 
 [back to top](#top)
 
+### Rejecting Promises
+
+```js
+var promise = new Promise(function(resolve, reject) {
+	setTimeout(function() {
+		// resolve('This is executed once the timer is done!');
+		reject({code: 500, message: 'An error occurred!'});
+	}, 3000);
+});
+
+// Here we have a separate function for the error
+
+// promise.then(function(text) {
+// 	return text;
+// }, function(err) {
+// 	console.log(err.code, err.message);
+// }).then(function(newText) {
+// 	console.log(newText);
+// })
+
+// Here we use the catch
+
+promise.then(function(text) {
+	return text;
+}).then(function(newText) {
+	console.log(newText);
+}).catch(function(err) {
+	console.log(err.code, err.message);
+});
+```
+
+[back to top](#top)
+
+### Fetch - Basics
+
+- Fetch is a method provided from the browser
+
+```js
+fetch('https://httpbin.org/ip')
+	.then(function(response) {
+		console.log(response);
+		return response.json();
+	})
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(err) {
+		console.log(err);
+	});
+```
+
+[back to top](#top)
+
+### Sending Post Requests via Fetch
+
+- Here is an example of a POST request in Fetch
+
+```js
+fetch('https://httpbin.org/post', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		'Accept': 'application/json'
+	},
+	body: JSON.stringify({message: 'Does this work?'})
+})
+	.then(function(response) {
+		console.log(response);
+		return response.json();
+	})
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(err) {
+		console.log(err);
+	});
+```
+
+[back to top](#top)
+
+### Comparing Fetch and AJAX
+
+```js
+// Traditional AJAX
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://httpbin.org/ip');
+xhr.responseType = 'json';
+
+xhr.onload = function() {
+	console.log(xhr.response);
+}
+
+xhr.onerror = function() {
+	console.log('Error!');
+}
+
+xhr.send();
+
+// Fetch GET request (same as above)
+fetch('https://httpbin.org/ip')
+	.then(function(response) {
+		console.log(response);
+		return response.json();
+	})
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(err) {
+		console.log(err);
+	});
+```
+
+[back to top](#top)
+
+**CM Next Steps:** Do the Fetch and Promise assignment.
+
+- install dependencies
+- follow instructions => shouldn't take long
+
 ## Service Workers - Caching
+
+### Why Caching?
 
 
 
