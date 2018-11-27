@@ -713,6 +713,149 @@ fetch('https://httpbin.org/ip')
 
 ![Caching API](https://github.com/coolinmc6/pwa-course/blob/master/assets/cache-api.png)
 
+- This was our Service Worker before we started doing caching:
+
+```js
+self.addEventListener('install', function(event) {
+  console.log('[Service Worker] Installing Service Worker ...', event);
+});
+
+self.addEventListener('activate', function(event) {
+  console.log('[Service Worker] Activating Service Worker ....', event);
+  return self.clients.claim();
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(fetch(event.request));
+});
+```
+
+- It had event listeners on three events: *install*, *activate*, and *fetch*.
+- The flurry of console.log lines were from these. 
+- The biggest one was the *fetch* one which every time we loaded a resource (CSS file, JS file, font, stylesheet from a CDN, etc.) it would fire
+	+ to see the resources you are loading, enter this: `console.log('[Service Worker] Fetching something ....', event.request.url);`
+- The fetch event is where we would simply listen for a fetch event and then simply return a fetch for `event.request`. So we pretty much listened for the fetch event and fetched the resource.
+- So that's where I was. This is what we added/changed:
+
+```js
+self.addEventListener('install', function(event) {
+	console.log('[Service Worker] Installing Service Worker...', event)
+
+	// need to do this to ensure that the caches are done
+	event.waitUntil(
+		caches.open('static') // "static" is the name of the cache that I'm opening / creating
+			.then(function(cache) {
+				console.log('[Service Worker] Precaching App Shell');
+				// cache.add('/'); // think of it paths, not specific files
+				// cache.add('/src/js/app.js') // when doing this, it is a key value pair
+				// cache.add('/index.html');
+				cache.addAll([
+					'/',
+					'/index.html',
+					'/src/js/app.js',
+					'/src/js/feed.js',
+					'/src/js/promise.js',
+					'/src/js/fetch.js',
+					'/src/js/material.min.js',
+					'/src/css/app.css',
+					'/src/css/feed.css',
+					'/src/images/main-image.jpg',
+					'https://fonts.googleapis.com/css?family=Roboto:400,700',
+					'https://fonts.googleapis.com/icon?family=Material+Icons',
+					'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
+				])
+			})
+	);
+});
+
+self.addEventListener('activate', function(event) {
+	console.log('[Service Worker] Activating Service Worker...', event)
+	return self.clients.claim();
+})
+
+self.addEventListener('fetch', function(event) {
+	console.log('[Service Worker] Fetching something ....', event.request.url);
+	event.respondWith(
+		caches.match(event.request)
+			.then(function(response) {
+				console.log(response);
+				if(response) {
+					return response;
+				} else {
+					return fetch(event.request)
+				}
+			})
+	);
+});
+```
+
+- We actually manipulated the *fetch* event listener first. So instead of just fetching whatever the request was, we check our cache:
+
+```js
+self.addEventListener('fetch', function(event) {
+	console.log('[Service Worker] Fetching something ....', event.request.url);
+	event.respondWith(
+		caches.match(event.request)
+			.then(function(response) {
+				console.log(response);
+				if(response) {
+					return response;
+				} else {
+					return fetch(event.request)
+				}
+			})
+	);
+});
+```
+
+- So for each *fetch* event, we do: `event.respondWith()`
+- And then in that `respondWith()` call we use `match()` on our `caches` object/array (whatever it is) to check for our `event.request`. If we find it, we return what we have in the cache; if not, we fetch it
+- So now, for every fetch event, we are checking for the resource in our cache and if we have it, returning the resource, and if not, fetching it.
+- Now, for the "install" event, this is what we did:
+
+```js
+self.addEventListener('install', function(event) {
+	console.log('[Service Worker] Installing Service Worker...', event)
+
+	// need to do this to ensure that the caches are done
+	event.waitUntil(
+		caches.open('static') // "static" is the name of the cache that I'm opening / creating
+			.then(function(cache) {
+				console.log('[Service Worker] Precaching App Shell');
+				// cache.add('/'); // think of it paths, not specific files
+				// cache.add('/src/js/app.js') // when doing this, it is a key value pair
+				// cache.add('/index.html');
+				cache.addAll([
+					'/',
+					'/index.html',
+					'/src/js/app.js',
+					'/src/js/feed.js',
+					'/src/js/promise.js',
+					'/src/js/fetch.js',
+					'/src/js/material.min.js',
+					'/src/css/app.css',
+					'/src/css/feed.css',
+					'/src/images/main-image.jpg',
+					'https://fonts.googleapis.com/css?family=Roboto:400,700',
+					'https://fonts.googleapis.com/icon?family=Material+Icons',
+					'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
+				])
+			})
+	);
+});
+```
+
+- We use `event.waitUntil` to make sure the caches are done being added
+- we then use `caches.open()` to open / create our cache. The string `static` is the argument we supply because that is what we're calling it. It could be anything; we call it static.
+- We then use `.then()` to add all the files that we want to track to our cache
+	+ the first few lines are individual `cache.add()` to show how to add files or "paths" for us to cache. We use `cache.addAll([])` which takes an array of strings to the paths of the files we want to cache
+- The next lecture discusses dynamic caching so this will probably change some more.
+
+### Dynamic Caching Upon Fetching
+
+![Dynamic Caching](https://github.com/coolinmc6/pwa-course/blob/master/assets/dynamic-caching.png)
+
+
 ## Service Workers - Advanced Caching
 
 

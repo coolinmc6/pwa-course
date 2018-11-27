@@ -1,4 +1,4 @@
-
+// what is up?
 var deferredPrompt;
 
 if (!window.Promise) {
@@ -8,7 +8,8 @@ if (!window.Promise) {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('/sw.js')
-    .then(function () {
+    .then(function (e) {
+    	console.log(e);
       console.log('Service worker registered!');
     })
     .catch(function(err) {
