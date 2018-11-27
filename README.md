@@ -319,7 +319,7 @@
 ```
 
 - Note: the "theme-color" tag typically matches your `theme_color` from the `manifest.json`
-- Here is the final HEAD tag additions:
+- Here are the final HEAD tag additions:
 
 ```html
 <!-- Required for All Web Apps -->
