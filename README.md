@@ -855,6 +855,97 @@ self.addEventListener('install', function(event) {
 
 ![Dynamic Caching](https://github.com/coolinmc6/pwa-course/blob/master/assets/dynamic-caching.png)
 
+### Implementing Dynamic Caching
+
+- We updated the Service Worker to add items dynamically to the cache by updating the `fetch` listener. Here are the two versions next to each other:
+
+```js
+// Old => Without Dynamic Caching
+self.addEventListener('fetch', function(event) {
+	console.log('[Service Worker] Fetching something ....', event.request.url);
+	event.respondWith(
+		caches.match(event.request)
+			.then(function(response) {
+				console.log(response);
+				if(response) {
+					return response;
+				} else {
+					return fetch(event.request)
+				}
+			})
+	);
+});
+
+
+// New => with Dynamic Caching
+self.addEventListener('fetch', function(event) {
+	console.log('[Service Worker] Fetching something ....', event.request.url);
+	event.respondWith(
+		caches.match(event.request)
+			.then(function(response) {
+				if(response) {
+					return response;
+				} else {
+					return fetch(event.request)
+						.then(function(res) {
+							return caches.open('dynamic')
+								.then(function(cache) {
+									cache.put(event.request.url, res.clone());
+									return res;
+								});
+						})
+						.catch(function(err) {
+
+						})
+				}
+			})
+	);
+});
+```
+
+### Adding Cache Versioning
+
+- One way to add a new cache is to simply change the name of the cache: `caches.open('static')` to `caches.open('static-v2')`
+- this introduces the problem of now having older files in your `static` cache
+
+### Different Cache Versions & Cleanup
+
+- So when do we delete the old cache? We shouldn't do it during the install because the old cache might still be getting used. We need to do it during the activation of the new cache:
+
+```js
+// Old Activate Listener
+self.addEventListener('activate', function(event) {
+	console.log('[Service Worker] Activating Service Worker...', event)
+	return self.clients.claim();
+})
+
+// New Activate Listener => delete old cache
+self.addEventListener('activate', function(event) {
+	console.log('[Service Worker] Activating Service Worker...', event)
+	event.waitUntil(
+		caches.keys()
+			.then(function(keylist) {
+
+				return Promise.all(keylist.map(function(key) {
+					if(key !== 'static-v2' && key !== 'dynamic') {
+						console.log('[Service Worker] Removing old cache', key);
+						return caches.delete(key);
+					}
+				}))
+			})
+	);
+	return self.clients.claim();
+});
+
+```
+
+- After we do `self.clients.claim()`, we use `event.waitUntil()` and go through our caches
+- `caches.keys()` returns an array of the keys for our caches
+- we chain a `.then(function(keylist) {})` to it
+- `return Promise.all()` returns a single Promise that resolves when all of the promises in the iterable argument have resolved or when the iterable argument contains no promises
+	+ [Promise.all() on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
+- Inside the `Promise.all()` we run map on our key list and look at each one. If the name does not equal the name of the two caches that we want to keep ("static-v2" and "dynamic"), we delete it using `caches.delete(key)`
+
 
 ## Service Workers - Advanced Caching
 
