@@ -946,6 +946,35 @@ self.addEventListener('activate', function(event) {
 	+ [Promise.all() on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 - Inside the `Promise.all()` we run map on our key list and look at each one. If the name does not equal the name of the two caches that we want to keep ("static-v2" and "dynamic"), we delete it using `caches.delete(key)`
 
+### Service Worker Caching Assignment
+
+- **NOTE: REMEMBER THIS!** This assignment is essentially how you setup a service worker and caching. I will need to return to this section again.
+- The assignment's instructions are a good how-to in and of itself:
+
+```js
+// 1) Register a Service Worker
+// 2) Identify the AppShell (i.e. core assets your app requires to provide its basic "frame")
+// 3) Precache the AppShell
+// 4) Add Code to fetch the precached assets from cache when needed
+// 5) Precache other assets required to make the root index.html file work
+// 6) Change some styling in the main.css file and make sure that the new file gets loaded + cached (hint: versioning)
+// 7) Make sure to clean up unused caches
+// 8) Add dynamic caching (with versioning) to cache everything in your app when visited/ fetched by the user
+```
+
+- Here are the instructions re-written in my words:
+
+**Service Worker Caching How-To (Summary)**
+
+1. **Register**: Register a service worker
+2. **Identify AppShell**: Identify core files your app needs to run; the "AppShell"
+3. **Cache AppShell**: Cache those core files / "AppShell"
+4. **Fetch Cached Assets**: Update `fetch` listener to fetch precached assets when needed
+5. **Dynamic Caching**: Precache other assets required to make your app work (i.e. Dynamic caching)
+6. **Cache Versioning**: Add versioning for both static and dynamic caches
+7. **Clean-up Caches**: Clean-up old caches that aren't current
+
+- I think that's a good summary but I want to really dig into each step below
 
 ## Service Workers - Advanced Caching
 

@@ -1,16 +1,13 @@
+
 var box = document.querySelector('.box');
 var button = document.querySelector('button');
 
-// #1 - Register Service Worker
 if ('serviceWorker' in navigator) {
-	navigator.serviceWorker
-		.register('/sw.js')
-		.then(function (e) {
-	  		console.log('Service worker registered!');
-		})
-		.catch(function(err) {
-			console.log(err);
-		});
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(function() {
+      console.log('Registered Service Worker!');
+    });
 }
 
 button.addEventListener('click', function(event) {
@@ -21,11 +18,6 @@ button.addEventListener('click', function(event) {
   }
 });
 
-
-//***********************************************************************************************
-// 
-// INSTRUCTIONS
-//
 // 1) Register a Service Worker
 // 2) Identify the AppShell (i.e. core assets your app requires to provide its basic "frame")
 // 3) Precache the AppShell
@@ -36,5 +28,3 @@ button.addEventListener('click', function(event) {
 // 8) Add dynamic caching (with versioning) to cache everything in your app when visited/ fetched by the user
 
 // Important: Clear your Application Storage first to get rid of the old SW & Cache from the Main Course Project!
-
-//***********************************************************************************************
