@@ -976,7 +976,192 @@ self.addEventListener('activate', function(event) {
 
 - I think that's a good summary but I want to really dig into each step below
 
+**Step 1: Register**
+
+- This step is pretty easy and as I've discussed above, does not really require a lot of (or any, really) original code. The snippet below is in the `main.js` file and pretty much register the serviceWorker if it exists in the browser
+
+```js
+// #1 - Register Service Worker
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker
+		.register('/sw.js')
+		.then(function (e) {
+	  		console.log('Service worker registered!');
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
+}
+```
+
+**Step 2: Identify AppShell**
+
+- This is where you'd go to your `index.html` file to identify the assets required for your app. Here are some of the assets I'll be looking to save:
+
+```html
+<!-- Stylesheets and Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css">
+<link rel="stylesheet" href="/src/css/app.css">
+<link rel="stylesheet" href="/src/css/main.css">
+
+<!-- Scripts -->
+<script defer src="/src/js/material.min.js"></script>
+<script src="/src/js/main.js"></script>
+```
+
+- in addition to these stylesheets, you need the actual html files. So we'll also want to cache `index.html`
+- The next step actually caches everything...
+
+**Step 3: Cache AppShell**
+
+- I'm going to setup the static cache naming in this step even though we don't actually do this until later.
+
+```js
+var CACHE_STATIC_NAME = 'static-v1';
+
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(CACHE_STATIC_NAME)
+      .then(function(cache) {
+        cache.addAll([
+          '/',
+          '/index.html',
+          '/src/css/app.css',
+          '/src/css/main.css',
+          '/src/js/main.js',
+          '/src/js/material.min.js',
+          'https://fonts.googleapis.com/css?family=Roboto:400,700',
+          'https://fonts.googleapis.com/icon?family=Material+Icons',
+          'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
+        ]);
+      })
+  )
+});
+```
+
+- On the install event, add our files to the cache name that we specify above using `cache.addAll([])`
+- This creates a cache called "static-v1".
+- *At this point, we have a cache but we never actually access it. We do that in the next step.*
+
+**Step 4: Fetch Cached Assets**
+
+- In this step, we are adding code to the `fetch` event listener. This is essentially what we are doing: for every fetch we make, check our cache; if it exists, grab those files from our cache. 
+- This is what fetching cached assets looks like:
+
+```js
+self.addEventListener('fetch', function(event) {
+	event.respondWith(
+		caches.match(event.request)
+			.then(function(response) {
+				console.log(response);
+				if(response) {
+					return response;
+				} else {
+					return fetch(event.request)
+				}
+			})
+	);
+});
+```
+
+- this is not what it will ultimately look like but this is static caching BEFORE dynamic caching
+
+**Step 5: Dynamic Caching**
+
+- In this step, we are creating a dynamic cache to keep track of the items that we don't "anticipate" with our initial static cache. This step has two main parts:
+	+ create a dynamic cache variable for versioning
+	+ update the fetch event so that if we don't have the asset, we cache it AND return it
+- Here is the updated `fetch` event listener:
+
+```js
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        if (response) {
+          return response;
+        } else {
+          return fetch(event.request)
+          	// NEW CODE
+            .then(function(res) {
+              return caches.open(CACHE_DYNAMIC_NAME)
+                .then(function(cache) {
+                  cache.put(event.request.url, res.clone());
+                  return res;
+                });
+            })
+            .catch(function(err) {
+
+            });
+        }
+      })
+  );
+});
+```
+
+- the big change is that we chain a `.then()` on the fetch that we've returned. We then do two things:
+	+ we use the `caches.open()` method that we used for the static assets to open a cache with a name that we set at the top of the page: `var CACHE_DYNAMIC_NAME = 'dynamic-v1';`
+	+ We then get our response, clone it, and add that to our cache
+	+ we then have to actually *return* the response
+		* notice that we do `return caches.open(...)` and then inside the `.then()` we have to actually return the response with `return res;`
+
+**Step 6: Clean-up Caches**
+
+- The versioning step doesn't really need to be separate. We've accomplished that part with these lines:
+
+```js
+// at the top of the file
+var CACHE_STATIC_NAME = 'static-v2';
+var CACHE_DYNAMIC_NAME = 'dynamic-v1';
+```
+
+- Cleaning up the caches is necessary to prevent the user from having a ton of old files. 
+- Versioning works by updating the number of the cache (i.e. v2, v3, v4, etc.)
+- We remove old caches during the `activate` event:
+
+```js
+self.addEventListener('activate', function(event) {
+	event.waitUntil(
+		caches.keys()
+			.then(function(keyList) {
+				return Promise.all(keyList.map(function(key) {
+					if(key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
+						return caches.delete(key);
+					}
+				}))
+			})
+	)
+});
+```
+
+- We use `event.waitUntil()` to force it wait to active until we've completed the function listed
+- We get a list of the keys `caches.keys()` and then using that array of key names, `keyList`, we return `Promise.all()` which doesn't resolve until ALL promises are resolved
+- Inside `Promise.all()`, we use `map` to go through each `key` name and simply check whether it equals the name of our static cache (**do we check that it doesn't equal our dynamic cache name either**) and if it doesn't, we delete it.
+- **Note:** the code below shows how we check the key list against BOTH the static and dynamic cache names. It would make sense that we want to save the dynamic cache:
+
+```js
+self.addEventListener('activate', function(event) {
+	console.log('[Service Worker] Activating Service Worker...', event)
+	event.waitUntil(
+		caches.keys()
+			.then(function(keylist) {
+				return Promise.all(keylist.map(function(key) {
+					if(key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
+						console.log('[Service Worker] Removing old cache', key);
+						return caches.delete(key);
+					}
+				}))
+			})
+	);
+	return self.clients.claim();
+});
+```
+
 ## Service Workers - Advanced Caching
+
 
 
 
