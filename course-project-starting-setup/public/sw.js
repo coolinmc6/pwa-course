@@ -1,5 +1,6 @@
-var CACHE_STATIC_NAME = 'static-v4';
-var CACHE_DYNAMIC_NAME = 'dynamic-v2'
+var CACHE_NUMBER = 9;
+var CACHE_STATIC_NAME = 'static-v' + CACHE_NUMBER;
+var CACHE_DYNAMIC_NAME = 'dynamic-v' + CACHE_NUMBER;
 
 self.addEventListener('install', function(event) {
 	console.log('[Service Worker] Installing Service Worker...', event)
@@ -15,6 +16,7 @@ self.addEventListener('install', function(event) {
 				cache.addAll([
 					'/',
 					'/index.html',
+					'/offline.html',
 					'/src/js/app.js',
 					'/src/js/feed.js',
 					'/src/js/promise.js',
@@ -63,7 +65,15 @@ self.addEventListener('fetch', function(event) {
 									cache.put(event.request.url, res.clone());
 									return res;
 								});
-						});
+						})
+						// one problem with this catch-statement is that ANY request that fails, like
+						// JSON, would return this page
+						.catch(function(err) {
+							return caches.open(CACHE_STATIC_NAME)
+								.then(function(cache) {
+									return cache.match('/offline.html');
+								})
+						})
 				}
 			})
 	)

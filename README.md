@@ -1162,8 +1162,66 @@ self.addEventListener('activate', function(event) {
 
 ## Service Workers - Advanced Caching
 
+### Caching On-Demand
 
+- the code below is just an example of a function that checks if caching is available in the browser
+- if it is, it caches the given resources. Obviously, here we'd probably pick the items that we'd want to cache programmatically, probably not hard-coded
 
+```js
+function onSaveButtonClicked(event) {
+  console.log('clicked');
+  if('caches' in window) {
+    caches.open('user-requested')
+      .then(function(cache) {
+        cache.add('https://httpbin.org/get');
+        cache.add('/src/images/sf-boat.jpg');
+      })  
+  } 
+}
+```
+
+- **Note:** to open a cache, you need to use `caches.open('cache-name')`. To then access what you just opened, you simply chain a `.then()` to it. Not groundbreaking or something I haven't seen before but just remember that that is how it work. You open the cache `caches.open('my-amazing-cache')` and then use a `.then()` to do more with it.
+
+### Cache then Network & Dynamic Caching
+
+- This is what we now have on the `feed.js` file:
+
+```js
+var url = 'https://httpbin.org/get';
+var networkDataReceived = false;
+
+fetch('https://httpbin.org/get')
+  .then(function(res) {
+    return res.json();
+  })
+  .then(function(data) {
+    networkDataReceived = true;
+    console.log('From web', data);
+    clearCards();
+    createCard();
+  });
+
+if('caches' in window) {
+  caches.match(url)
+    .then(function(response) {
+      if (response) {
+        return response.json()
+      }
+    })
+    .then(function(data) {
+      console.log('From cache', data);
+      if(!networkDataReceived) {
+        clearCards();
+        createCard();  
+      }
+      
+    })
+}
+```
+
+- we do the fetch but also check if `caches` exists in the browser and returns that response.
+- We added the `networkDataReceived` variable to ensure that we didn't overwrite web data with cached data, which is by its nature stale
+- I don't yet know how I'd implement this on a particular page with multiple fetches for information
 
 [back to top](#top)
 
