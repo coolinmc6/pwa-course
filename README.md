@@ -1237,6 +1237,13 @@ if('caches' in window) {
 
 [back to top](#top)
 
+
+**CM => do the Advanced Caching Exercise later. These are my thoughts right now: there are several strategies that seem to defeat the purpose of a PWA (i.e. Network only strategy) that don't seem to have much use in "implementing". It may be worth the time of going through it but I just don't feel feel that it's super important, right now.**
+
+
+
+
+
 ## IndexDB and Dynamic Data
 
 
