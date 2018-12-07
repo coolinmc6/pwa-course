@@ -3,6 +3,8 @@ var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 var sharedMomentsArea = document.querySelector('#shared-moments');
 
+// Whats up?
+
 function openCreatePostModal() {
   createPostArea.style.display = 'block';
   if (deferredPrompt) {
@@ -30,16 +32,17 @@ shareImageButton.addEventListener('click', openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 
-// Currently not in use, allows to save assets in cache on demand otherwise
+// Not being used anymore but demonstrates manual caching from the user via the "Save" button
 function onSaveButtonClicked(event) {
   console.log('clicked');
-  if ('caches' in window) {
+  if('caches' in window) {
     caches.open('user-requested')
       .then(function(cache) {
         cache.add('https://httpbin.org/get');
         cache.add('/src/images/sf-boat.jpg');
-      });
+      })  
   }
+  
 }
 
 function clearCards() {
@@ -58,7 +61,6 @@ function createCard() {
   cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
-  cardTitleTextElement.style.color = 'white';
   cardTitleTextElement.className = 'mdl-card__title-text';
   cardTitleTextElement.textContent = 'San Francisco Trip';
   cardTitle.appendChild(cardTitleTextElement);
@@ -68,8 +70,8 @@ function createCard() {
   cardSupportingText.style.textAlign = 'center';
   // var cardSaveButton = document.createElement('button');
   // cardSaveButton.textContent = 'Save';
-  // cardSaveButton.addEventListener('click', onSaveButtonClicked);
   // cardSupportingText.appendChild(cardSaveButton);
+  // cardSaveButton.addEventListener('click', onSaveButtonClicked)
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
@@ -78,7 +80,7 @@ function createCard() {
 var url = 'https://httpbin.org/get';
 var networkDataReceived = false;
 
-fetch(url)
+fetch('https://httpbin.org/get')
   .then(function(res) {
     return res.json();
   })
@@ -89,18 +91,21 @@ fetch(url)
     createCard();
   });
 
-if ('caches' in window) {
+if('caches' in window) {
   caches.match(url)
     .then(function(response) {
       if (response) {
-        return response.json();
+        return response.json()
       }
     })
     .then(function(data) {
       console.log('From cache', data);
-      if (!networkDataReceived) {
+      if(!networkDataReceived) {
         clearCards();
-        createCard();
+        createCard();  
       }
-    });
+      
+    })
 }
+
+

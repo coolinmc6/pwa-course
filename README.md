@@ -851,9 +851,13 @@ self.addEventListener('install', function(event) {
 	+ the first few lines are individual `cache.add()` to show how to add files or "paths" for us to cache. We use `cache.addAll([])` which takes an array of strings to the paths of the files we want to cache
 - The next lecture discusses dynamic caching so this will probably change some more.
 
+[back to top](#top)
+
 ### Dynamic Caching Upon Fetching
 
 ![Dynamic Caching](https://github.com/coolinmc6/pwa-course/blob/master/assets/dynamic-caching.png)
+
+[back to top](#top)
 
 ### Implementing Dynamic Caching
 
@@ -903,10 +907,14 @@ self.addEventListener('fetch', function(event) {
 });
 ```
 
+[back to top](#top)
+
 ### Adding Cache Versioning
 
 - One way to add a new cache is to simply change the name of the cache: `caches.open('static')` to `caches.open('static-v2')`
 - this introduces the problem of now having older files in your `static` cache
+
+[back to top](#top)
 
 ### Different Cache Versions & Cleanup
 
@@ -945,6 +953,8 @@ self.addEventListener('activate', function(event) {
 - `return Promise.all()` returns a single Promise that resolves when all of the promises in the iterable argument have resolved or when the iterable argument contains no promises
 	+ [Promise.all() on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 - Inside the `Promise.all()` we run map on our key list and look at each one. If the name does not equal the name of the two caches that we want to keep ("static-v2" and "dynamic"), we delete it using `caches.delete(key)`
+
+[back to top](#top)
 
 ### Service Worker Caching Assignment
 
@@ -1159,6 +1169,8 @@ self.addEventListener('activate', function(event) {
 	return self.clients.claim();
 });
 ```
+
+[back to top](#top)
 
 ## Service Workers - Advanced Caching
 
