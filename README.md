@@ -1240,9 +1240,11 @@ if('caches' in window) {
 
 **CM => do the Advanced Caching Exercise later. These are my thoughts right now: there are several strategies that seem to defeat the purpose of a PWA (i.e. Network only strategy) that don't seem to have much use in "implementing". It may be worth the time of going through it but I just don't feel feel that it's super important, right now.**
 
+### Section 6 - Resources and Links
 
-
-
+- [The Offline Cookbook](https://jakearchibald.com/2014/offline-cookbook/)
+- [Upgrading Your Service Worker Cache](https://www.afasterweb.com/2017/01/31/upgrading-your-service-worker-cache/)
+- [Service Worker Strategies](https://serviceworke.rs/strategy-cache-and-update_service-worker_doc.html)
 
 ## IndexDB and Dynamic Data
 
