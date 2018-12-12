@@ -1248,6 +1248,16 @@ if('caches' in window) {
 
 ## IndexDB and Dynamic Data
 
+### Understanding the Basics - IndexedDB
+
+- Firebase Setup
+	+ Setup wasn't bad, different than his version
+	+ Looks like an exciting technology - I should probably spend a few hours learning it
+- We have now setup dynamic data in our app and we are fetching info from Firebase
+	+ Quick note: I was using a different system than he was, hence the difference. They looked similar but I lost 5 minutes switching over
+- Next steps:
+	+ we are all setup to learn about IndexedDB
+
 
 
 [back to top](#top)
