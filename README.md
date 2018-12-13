@@ -1262,6 +1262,77 @@ if('caches' in window) {
 
 ![What are Service Workers](https://github.com/coolinmc6/pwa-course/blob/master/assets/images/dyn-cache-vs-cache-dyn-content.png)
 
+### Introducing IndexedDE
+
+- a transactional Key-Value Database in the Browser
+	+ transactional = if one action within a transaction fails, none of the Actions of that Transaction are applied
+- Store significant amounts of unstructured data like files or Blobs
+- Can be accessed asynchronously
+	+ Means that you can be used in a Service Worker
+	+ you can use both through normal JavaScript code **and** SW's
+- Database (typically one DB per APP) => Object Store (like a table) => Object (what you store)
+
+### Using IndexedDB in the Service Worker
+
+- This is a brief list and some code of what we did up to this point:
+	+ added `idb.js` which is from [https://github.com/jakearchibald/idb](https://github.com/jakearchibald/idb)
+		* it replaced the IDBreqest objects with promises and generally makes IDB easier to use
+	+ we added `idb.js` to our `index.html` file with the other js scripts...
+		* we imported it into `sw.js` at the top: `importScripts('/src/js/idb.js');`
+		* and then added it to our `STATIC_FILES` array for our static cache (`'/src/js/idb.js',`)
+	+ wrote code to create an IDB "table"
+	+ wrote code to write our data to that table
+- We then refactored it so that we didn't have to keep doing those last two items over and over. 
+	+ we have to remember to include it in the sw: `importScripts('/src/js/utility.js');`
+- We created the `utility.js` file with these two pieces of code:
+
+```js
+// utility.js
+
+// = - = - = - = - = - = - = - = - = - = - = - = - =
+// Create dbPromise object (globally)
+var dbPromise = idb.open('posts-store', 1, function(db) {
+  if(!db.objectStoreNames.contains('posts')) {
+    db.createObjectStore('posts', {keyPath: 'id'});  
+  }
+})
+
+// = - = - = - = - = - = - = - = - = - = - = - = - =
+// Helper function to write data
+// st = the store or "table" we are saving it to
+// data = the data we are saving
+function writeData(st, data) {
+	return dbPromise
+	  .then(function(db) {
+	    var tx = db.transaction(st, 'readwrite');
+	    var store = tx.objectStore(st)
+	    store.put(data);
+	    return tx.complete
+	  })
+}
+
+```
+
+- then, in our `fetch` event listener, we did the following:
+
+```js
+if (event.request.url.indexOf(url) > -1) {
+  event.respondWith(fetch(event.request)
+    .then(function (res) {
+      var clonedRes = res.clone();
+      clonedRes.json()
+        .then(function(data) {
+          for (var key in data) {
+            writeData('posts', data[key]);
+          }
+        });
+      return res;
+    })
+  );
+} 
+```
+
+- we are now all setup to read from IDB
 
 [back to top](#top)
 
