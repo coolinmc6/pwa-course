@@ -1258,6 +1258,9 @@ if('caches' in window) {
 - Next steps:
 	+ we are all setup to learn about IndexedDB
 
+### Dynamic Caching vs. Caching Dynamic Content
+
+![What are Service Workers](https://github.com/coolinmc6/pwa-course/blob/master/assets/images/dyn-cache-vs-cache-dyn-content.png)
 
 
 [back to top](#top)
