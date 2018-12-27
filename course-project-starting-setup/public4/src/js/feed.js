@@ -4,10 +4,7 @@ var closeCreatePostModalButton = document.querySelector('#close-create-post-moda
 var sharedMomentsArea = document.querySelector('#shared-moments');
 
 function openCreatePostModal() {
-  // createPostArea.style.display = 'block';
-  // setTimeout(function() {
-    createPostArea.style.transform = 'translateY(0)';
-  // }, 1);
+  createPostArea.style.display = 'block';
   if (deferredPrompt) {
     deferredPrompt.prompt();
 
@@ -35,8 +32,7 @@ function openCreatePostModal() {
 }
 
 function closeCreatePostModal() {
-  createPostArea.style.transform = 'translateY(100vh)';
-  // createPostArea.style.display = 'none';
+  createPostArea.style.display = 'none';
 }
 
 shareImageButton.addEventListener('click', openCreatePostModal);
@@ -66,8 +62,9 @@ function createCard(data) {
   cardWrapper.className = 'shared-moment-card mdl-card mdl-shadow--2dp';
   var cardTitle = document.createElement('div');
   cardTitle.className = 'mdl-card__title';
-  cardTitle.style.backgroundImage = 'url(' + data.image + ')';
+  cardTitle.style.backgroundImage = 'url('+ data.image + ')';
   cardTitle.style.backgroundSize = 'cover';
+  cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
   cardTitleTextElement.style.color = 'white';
@@ -88,13 +85,12 @@ function createCard(data) {
 }
 
 function updateUI(data) {
-  clearCards();
   for (var i = 0; i < data.length; i++) {
     createCard(data[i]);
   }
 }
 
-var url = 'https://pwagram-99adf.firebaseio.com/posts.json';
+var url = 'https://pwagram-7ad1d.firebaseio.com/post.json';
 var networkDataReceived = false;
 
 fetch(url)
@@ -104,19 +100,20 @@ fetch(url)
   .then(function(data) {
     networkDataReceived = true;
     console.log('From web', data);
-    var dataArray = [];
+    var dataArray = []
     for (var key in data) {
       dataArray.push(data[key]);
     }
-    updateUI(dataArray);
+    clearCards();
+    updateUI(dataArray)
   });
 
 if ('indexedDB' in window) {
-  readAllData('posts')
+  readAllData('posts')  
     .then(function(data) {
-      if (!networkDataReceived) {
-        console.log('From cache', data);
+      if(!networkDataReceived) {
+        console.log('From cache', data)
         updateUI(data);
       }
-    });
+    })
 }

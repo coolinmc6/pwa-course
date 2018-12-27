@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var CACHE_STATIC_NAME = 'static-v22';
+var CACHE_STATIC_NAME = 'static-v18';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_FILES = [
   '/',
@@ -20,19 +20,6 @@ var STATIC_FILES = [
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
 ];
-
-// function trimCache(cacheName, maxItems) {
-//   caches.open(cacheName)
-//     .then(function (cache) {
-//       return cache.keys()
-//         .then(function (keys) {
-//           if (keys.length > maxItems) {
-//             cache.delete(keys[0])
-//               .then(trimCache(cacheName, maxItems));
-//           }
-//         });
-//     })
-// }
 
 self.addEventListener('install', function (event) {
   console.log('[Service Worker] Installing Service Worker ...', event);
@@ -72,20 +59,23 @@ function isInArray(string, array) {
   return array.indexOf(cachePath) > -1;
 }
 
+// =================================================================
+// Fetch event listener
+
 self.addEventListener('fetch', function (event) {
 
-  var url = 'https://pwagram-99adf.firebaseio.com/posts';
+  var url = 'https://pwagram-7ad1d.firebaseio.com/post.json';
   if (event.request.url.indexOf(url) > -1) {
     event.respondWith(fetch(event.request)
       .then(function (res) {
         var clonedRes = res.clone();
         clearAllData('posts')
-          .then(function () {
-            return clonedRes.json();
+          .then(function() {
+            return clonedRes.json()
           })
-          .then(function (data) {
+          .then(function(data) {
             for (var key in data) {
-              writeData('posts', data[key])
+              writeData('posts', data[key]);
             }
           });
         return res;
