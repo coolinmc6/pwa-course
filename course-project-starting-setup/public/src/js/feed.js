@@ -2,6 +2,9 @@ var shareImageButton = document.querySelector('#share-image-button');
 var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 var sharedMomentsArea = document.querySelector('#shared-moments');
+var form = document.querySelector('form');
+var titleInput = document.querySelect('#title')
+var locationInput = document.querySelect('#location')
 
 function openCreatePostModal() {
   // createPostArea.style.display = 'block';
@@ -120,3 +123,42 @@ if ('indexedDB' in window) {
       }
     });
 }
+
+
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  if(titleInput.value.trim() == '' || locationInput.value.trim() === "") {
+    alert('Please enter valid data!');
+    return;
+  }
+
+  closeCreatePostModal();
+
+  if('serviceWorker' in navigator && 'SyncManager' in window) {
+    navigator.serviceWorker.ready
+      .then(function(sw) {
+        var post = {
+          id: new Date().toISOString(),
+          title: titleInput.value,
+          location: locationInput.value
+        };
+        writeData('sync-posts', post)
+          .then(function() {
+            return sw.sync.register('sync-new-post');    
+          })
+          .then(function() {
+            var snackbarContainer = document.querySelector('#confirmation-toast');
+            var data = { message: 'Your Post was saved for syncing!'};
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          })
+          .catch(function(err) {
+            console.log(err);
+          })
+        
+      });
+  }
+
+
+});

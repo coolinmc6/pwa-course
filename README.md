@@ -1359,6 +1359,17 @@ if (event.request.url.indexOf(url) > -1) {
 
 ## Background Sync
 
+### How does Background Sync Work?
+
+- How it works
+	+ it's all about sending data to the server when you don't have a network connection
+	+ Register Sync Task in the Service Worker
+	+ The Stored Data which should be sent is stored in IndexedDB
+	+ Connectivity is re-established and a "sync" event occurs
+
+### Adding Basic Setup to our Project
+
+
 
 
 [back to top](#top)
