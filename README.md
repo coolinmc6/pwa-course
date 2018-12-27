@@ -1338,7 +1338,22 @@ if (event.request.url.indexOf(url) > -1) {
 
 ## Creating a Responsive User Interface (UI)
 
+### Responsive Design in this Course
 
+- a true PWA is responsive => it should look good on all devices
+- Responsive Design in a Nutshell
+	+ use CSS Media Queries to adjust layout & design
+	+ Mobile first!
+	+ Make your images responsive
+		* style them in a responsive way
+		* determine which image should be loaded on mobile vs. desktop
+
+### Undestanding Responsive Design in our Project
+
+- `srcset="/src/images/main-image-lg 1200w, /src/images/main-image.jpg 900w, /src/images/main-image-sm.jpg 480w"`
+	+ look up srcset
+
+- Lecture 120 has a cool slide up and down animation
 
 [back to top](#top)
 
